@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 int arr[100];
 int n = 0;
 
@@ -10,6 +11,7 @@ void nhapMang() {
         scanf("%d", &arr[i]);
     }
 }
+
 void inMang() {
     printf("Cac phan tu trong mang:\n");
     for(int i = 0; i < n; i++) {
@@ -19,12 +21,8 @@ void inMang() {
 }
 
 void themPhanTu(int viTri, int giaTri) {
-    if (n >= 100) {
-        printf("Mang da day, khong the them phan tu.\n");
-        return;
-    }
-    if (viTri < 0 || viTri > n) {
-        printf("Vi tri khong hop le.\n");
+    if (n >= 100 || viTri < 0 || viTri > n) {
+        printf("Khong the them phan tu.\n");
         return;
     }
     for(int i = n; i > viTri; i--) {
@@ -35,41 +33,49 @@ void themPhanTu(int viTri, int giaTri) {
 }
 
 void suaPhanTu(int viTri, int giaTri) {
-    if (viTri < 0 || viTri >= n) {
+    if (viTri >= 0 && viTri < n) {
+        arr[viTri] = giaTri;
+    } else {
         printf("Vi tri khong hop le.\n");
-        return;
     }
-    arr[viTri] = giaTri;
 }
+
 void xoaPhanTu(int viTri) {
-    if (viTri < 0 || viTri >= n) {
+    if (viTri >= 0 && viTri < n) {
+        for(int i = viTri; i < n - 1; i++) {
+            arr[i] = arr[i + 1];
+        }
+        n--;
+    } else {
         printf("Vi tri khong hop le.\n");
-        return;
     }
-    for(int i = viTri; i < n - 1; i++) {
-        arr[i] = arr[i + 1];
+}
+
+void sapXepMang(char order) {
+    for(int i = 0; i < n - 1; i++) {
+        for(int j = i + 1; j < n; j++) {
+            if ((order == 'a' && arr[i] < arr[j]) || (order == 'b' && arr[i] > arr[j])) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
     }
-    n--;
 }
 
 void hienThiMenu() {
-    printf("MENU\n");
-    printf("1. Nhap so phan tu can nhap va gia tri cac phan tu\n");
+    printf("MENU\n1. Nhap so phan tu can nhap va gia tri cac phan tu\n");
     printf("2. In ra gia tri cac phan tu dang quan ly\n");
     printf("3. Them mot phan tu vao vi tri chi dinh\n");
     printf("4. Sua mot phan tu o vi tri chi dinh\n");
     printf("5. Xoa mot phan tu o vi tri chi dinh\n");
-    printf("6. Sap xep cac phan tu\n");
-    printf("   a. Giam dan\n");
-    printf("   b. Tang dan\n");
-    printf("7. Tim kiem phan tu nhap vao\n");
-    printf("   a. Tim kiem tuyen tinh\n");
-    printf("   b. Tim kiem nhi phan\n");
-    printf("8. Thoat\n");
+    printf("6. Sap xep cac phan tu\n   a. Giam dan\n   b. Tang dan\n");
+    printf("7. Thoat\n");
 }
 
 int main() {
-    int choice, subchoice, viTri, giaTri;
+    int choice, viTri, giaTri;
+    char subchoice;
 
     do {
         hienThiMenu();
@@ -98,21 +104,26 @@ int main() {
                 suaPhanTu(viTri, giaTri);
                 break;
             case 5:
-            	printf("Nhap vi tri can xoa: ");
-            	scanf("%d",&viTri);
-            	xoaPhanTu(viTri);
-            	break;
+                printf("Nhap vi tri can xoa: ");
+                scanf("%d", &viTri);
+                xoaPhanTu(viTri);
+                break;
             case 6:
-            	break;
+                printf("Chon cach sap xep:\n   a. Giam dan\n   b. Tang dan\n");
+                getchar(); 
+                subchoice = getchar();
+                if (subchoice == 'a' || subchoice == 'b') {
+                    sapXepMang(subchoice);
+                } else {
+                    printf("Lua chon khong hop le.\n");
+                }
+                break;
             case 7:
-            	break;
-            case 8:
-            	break;
-	
-	
-	}
-	}while(choice!=8);
-	
-	return 0;
-}
+                break;
+            default:
+                printf("Lua chon khong hop le.\n");
+        }
+    } while (choice != 8);
 
+    return 0;
+}
